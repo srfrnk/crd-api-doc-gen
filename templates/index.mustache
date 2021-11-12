@@ -7,8 +7,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="UTF-8" />
   {{>js_jquery}}
-  {{>js_prettify}}
-  {{>js_bootstrap}}
   {{>marked}}
   <script>
     $( document ).ready(function() {
@@ -23,143 +21,22 @@
         smartypants: false
       });
 
-      var textFile = null;
-
-      /// Function to be used to download a text json schema
-      function makeTextFile(text) {
-
-        var data = new Blob([text], {type: 'text/plain'});
-
-        // If we are replacing a previously generated file we need to
-        // manually revoke the object URL to avoid memory leaks.
-        if (textFile !== null) {
-          window.URL.revokeObjectURL(textFile);
-        }
-
-        textFile = window.URL.createObjectURL(data);
-
-        var a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        a.href = textFile;
-        a.download = 'schema.txt';
-        a.click();
-
-        return textFile;
-      };
-
-      /// TODO: Implement resizing for expanding within iframe
-      function callResize() {
-        window.parent.postMessage('resize', "*");
-      }
-
       function processMarked() {
         $(".marked").each(function() {
           $(this).html(marked($(this).html()));
         });
       }
 
-      // Bootstrap Scrollspy
-      $(this).scrollspy({ target: '#scrollingNav', offset: 18 });
-
-      // Content-Scroll on Navigation click.
-      $('.sidenav').find('a').on('click', function(e) {
-          e.preventDefault();
-          var id = $(this).attr('href');
-          if ($(id).length > 0)
-              $('html,body').animate({ scrollTop: parseInt($(id).offset().top) }, 400);
-          window.location.hash = $(this).attr('href');
-      });
-
-      // Quickjump on Pageload to hash position.
-      if(window.location.hash) {
-          var id = window.location.hash;
-          if ($(id).length > 0)
-              $('html,body').animate({ scrollTop: parseInt($(id).offset().top) }, 0);
-      }
-
-
-      function initDynamic() {
-        // tabs
-        $('.nav-tabs-examples a').click(function (e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-
-
-        $('.nav-tabs-examples').find('a:first').tab('show');
-
-        // call scrollspy refresh method
-        $(window).scrollspy('refresh');
-      }
-
-      initDynamic();
-
-      // Pre- / Code-Format
-      prettyPrint();
-
       //Convert elements with "marked" class to markdown
       processMarked();
     });
-
-    function findNode(id, currentNode) {
-        var currentChild,
-            result;
-
-        if ( Object.keys(currentNode)[0] == id) {
-            return currentNode;
-        } else {
-            // Use a for loop instead of forEach to avoid nested functions
-            // Otherwise "return" will not work properly
-            for(var propt in currentNode){
-                if (currentNode.hasOwnProperty(propt)) {
-                    currentChild = currentNode[propt]
-                    if (id == propt) {
-                        return currentChild;
-                    } else {
-                        // Search in the current child
-                        if (typeof(currentChild) === 'object') {
-                            result = findNode(id, currentChild);
-                            if (result != false) {
-                                return result;
-                            }
-                        }
-                    }
-                }
-            }
-            // The node has not been found and we have no more options
-           return false;
-        }
-    }
   </script>
   <style type="text/css">
     {{>fonts}}
-
-    {{>css_bootstrap}}
-    {{>css_prettify}}
-
     {{>styles}}
   </style>
 </head>
 <body>
-  <script>
-    // Script section to load models into a JS Var
-    var defs = {}
-    {{#models}}
-    {{#model}}
-    defs["{{name}}"] = {{{modelJson}}};
-    {{/model}}
-    {{/models}}
-
-    var errs = {};
-    {{#swagger.vendorExtensions.x-shared-errors}}
-    {
-      let err = {{{.}}};
-      errs[err.errorID] = err;
-    }
-    {{/swagger.vendorExtensions.x-shared-errors}}
-  </script>
-
   <div class="container-fluid">
     <div class="row-fluid">
       <div id="sidenav" class="span2">
@@ -306,6 +183,13 @@
                 var crd=this.getAttribute("data");
                 $(this).html(renderCrd(crd,defs[crd]));
               });
+
+              if(window.location.hash) {
+                var id = window.location.hash;
+                if ($(id).length > 0) {
+                  $("html").animate({scrollTop:parseInt($(id).offset().top)},0);
+                }
+              }
             });
           </script>
           <div id="footer">
@@ -327,23 +211,21 @@
       </div>
     </div>
   </div>
-  {{>js_jsonformatter}}
-  {{>js_jsonschemaview}}
   {{>js_json_schema_ref_parser}}
-  {{>js_json_stringify_safe}}
   {{>js_webfontloader}}
   <script>
+    // Script section to load models into a JS Var
+    var defs = {}
+    {{#models}}
+    {{#model}}
+    defs["{{name}}"] = {{{modelJson}}};
+    {{/model}}
+    {{/models}}
     var schemaWrapper = { "components": { "schemas" : defs}};
     defsParser = new $RefParser();
     defsParser.dereference(schemaWrapper).catch(function(err) {
       console.log(err);
     });
-  </script>
-  <script>
-  $(document).ready(function () {
-    $('.nav-tabs-examples').find('a:first').tab('show');
-    $(this).scrollspy({ target: '#scrollingNav', offset: 18 });
-  });
   </script>
 </body>
 </html>
