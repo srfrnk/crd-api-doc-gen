@@ -13,7 +13,7 @@ To generate an `HTML` API documentation page:
 1. `<INPUT_FOLDER_PATH>` needs to contain any `yaml` or `json` K8s manifest files with CRD definitions.
 1. Find generated HTML page `index.html` inside the specified output folder.
 
-### API Info file
+## API Info file
 
 To customize api info you can specify an api-info file.
 This file must be in `yaml`/`json` format at have the following structure:
@@ -24,3 +24,8 @@ api-info:
   title: <ANY STRING>
   description: <ANY MARKDOWN TEXT>
 ```
+
+## Credits
+
+1. Based on [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
+1. Using [yq](https://github.com/mikefarah/yq)
