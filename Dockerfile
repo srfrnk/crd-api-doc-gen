@@ -1,7 +1,7 @@
 FROM openapitools/openapi-generator:cli-latest-release
 
-RUN apt-get update -y
-RUN apt-get install -yy curl git wget
+RUN apt-get update -y &&\
+  apt-get install -yy wget
 
 RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
   chmod +x /usr/bin/yq
