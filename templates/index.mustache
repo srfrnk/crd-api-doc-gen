@@ -122,7 +122,8 @@
               var typeSection = `
                 <td class="prop-type-info">
                   <p class="prop-type">${schema.type||''}</p>
-                  ${!schema.isRequired?'':' <p class="prop-required">required</p>'}
+                  ${!schema.enum?'':`<p class="prop-enum">Enum: ${schema.enum.map(v=>`"${v}"`).join(', ')}</p>`}
+                  ${!schema.isRequired?'':'<p class="prop-required">required</p>'}
                   ${!schema.default?'':`<p class="prop-default">Default: ${JSON.stringify(schema.default)}</p>`}
                 </td>
               `;
