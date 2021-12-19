@@ -16,7 +16,7 @@ To generate an `HTML` API documentation page:
 ## API Info file
 
 To customize api info you can specify an api-info file.
-This file must be in `yaml`/`json` format at have the following structure:
+This file must be in `yaml`/`json` format and have the following structure:
 
 ```yaml
 api-info:
